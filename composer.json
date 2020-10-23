@@ -1,0 +1,17 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Doomy\\DataGrid\\" : "src/"
+        }
+    },
+    "name": "doomy/datagrid",
+    "description": "DataGrid components",
+    "require": {
+        "php": "^7.4",
+        "doomy/components": "1.2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "7.5.9",
+        "mockery/mockery": "^1.3"
+    }
+}

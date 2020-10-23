@@ -1,0 +1,109 @@
+{snippet dataGrid}
+
+{include '..\..\..\vendor\doomy\components\src\templates\flashMessages.latte'}
+{if (!empty($flashMessage))}
+    <h1>{$flashMessage}</h1>
+{/if}
+{control addForm}
+<table class="table table-striped table-bordered dataTable no-footer datagrid">
+
+    {if !$readOnly}
+        <tr>
+            <td colspan="{count($keys)}">
+                <a
+                    {if $preventPopup}
+                        href="#{$rowFormHtmlId|noescape}" data-toggle="collapse"
+                    {else}
+                        onclick='$("#{$rowFormHtmlId|noescape}").modal();'
+                    {/if}
+                    class="btn btn-success btn-circle btn-icon">
+                    <i class="fa fa-plus"></i>
+                </a>
+            </td>
+            {if isset($identityKey)}
+                <td></td>
+            {/if}
+        </tr>
+    {/if}
+    <tr>
+        {foreach $keys as $key}
+            <th>{$key}</th>
+        {/foreach}
+        {if isset($identityKey)}
+            <th></th>
+        {/if}
+    </tr>
+    <tbody>
+    {foreach $items as $item}
+        <tr {if isset($identityKey)}data-id="{$item[$identityKey]->getValue()}"{/if}>
+            {foreach $keys as $key}
+                <td style="">
+                    {$item[$key]->getValue()}
+                </td>
+            {/foreach}
+            {if isset($identityKey) && !$readOnly}
+                <td>
+                    {capture $deleteMessage}{_}Really delete?{/_}{/capture}
+                    <a
+                            class="delete"
+                            n:href="deleteItem!, $item[$identityKey]->getValue()"
+
+                    >
+                        <i class="fa fa-remove"></i>
+                    </a>
+                </td>
+            {/if}
+        </tr>
+    {/foreach}
+    <tbody>
+</table>
+
+<style>
+    table.datagrid {
+        max-width: 100%;
+    }
+
+    table.datagrid td {
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    table.datagrid td a.delete {
+        color: red;
+    }
+</style>
+<script>
+
+    $(".delete").click(function () {
+       var url = $(this).attr("href");
+        $.ajax(
+            {
+                url: url,
+                method: "GET",
+                success: function(response) {
+                    redrawSnippets(response.snippets);
+                }
+            }
+        );
+
+       return false;
+    });
+
+    function redrawSnippets(snippets) {
+        $.each(snippets, function (snippetId, html) {
+            $("#"+snippetId).html(html);
+        })
+    }
+</script>
+
+{if !$readOnly && isset($identityKey)}
+    {include "dataGrid/sortable.latte"}
+{/if}
+
+{/snippet}
+
+<style>
+    #{$rowFormHtmlId} input[type=file] {
+        display: block;
+    }
+</style>

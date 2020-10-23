@@ -1,0 +1,5 @@
+SCRIPT=`realpath $0`
+SCRIPTPATH=`dirname $SCRIPT`
+cd $SCRIPTPATH/..
+php vendor/phpunit/phpunit/phpunit tests/unit --bootstrap vendor/autoload.php --colors --stop-on-error --stop-on-failure
+cd -

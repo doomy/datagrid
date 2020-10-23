@@ -1,0 +1,32 @@
+<script>
+    var reorderLink = {link reorder!};
+</script>
+
+<script n:syntax="off">
+    var selector = "table.datagrid tbody";
+    $(selector).sortable({
+        stop: handleResort
+    });
+
+    function handleResort()
+    {
+        var ids = [];
+        $.each($(selector + " tr"), function () {
+            id = $(this).attr("data-id");
+            if(!id) {
+                return;
+            }
+            ids.push(id);
+        });
+        $.ajax(
+            {
+                url: reorderLink,
+                method: "POST",
+                data: {
+                    ids: ids
+                }
+            }
+        );
+
+    }
+</script>
