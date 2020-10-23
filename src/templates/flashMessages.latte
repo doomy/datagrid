@@ -1,0 +1,8 @@
+<div id="flashMessages">
+    <div n:foreach="$flashes as $flash" n:class="flash, $flash->type">
+        {if ($flash->type == 'alert alert-info')}
+            <i class="fa fa-info-circle"></i>
+        {/if}
+        {$flash->message}
+    </div>
+</div>
