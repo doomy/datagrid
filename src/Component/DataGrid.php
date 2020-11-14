@@ -9,10 +9,12 @@ use Doomy\Components\Component\DynamicPopupForm;
 use Doomy\Components\FlashMessage;
 use Doomy\ExtendedNetteForm\Form;
 use Doomy\Ormtopus\DataEntityManager;
+use Doomy\Translator\Service\DummyTranslator;
 use Doomy\Translator\Service\Translator;
 use Nette\Forms\Controls\SelectBox;
 use Nette\Forms\Controls\TextInput;
 use Nette\Forms\Controls\UploadControl;
+use Nette\Localization\ITranslator;
 
 class DataGrid extends BaseComponent
 {
@@ -74,8 +76,9 @@ class DataGrid extends BaseComponent
      */
     private DataEntityManager $data;
 
+    protected ITranslator $translator;
+
     public function __construct(
-        Translator $translator,
         DataGridEntryFactory $dataGridEntryFactory,
         DataEntityManager $data,
         string $entityClass,
@@ -83,7 +86,7 @@ class DataGrid extends BaseComponent
         bool $preventPopup = FALSE
     )
     {
-        parent::__construct($translator);
+        parent::__construct();
         $this->preventPopup = $preventPopup;
         $this['addForm'] = $this->preventPopup ? $this->getCollapsedRowForm() : $this->getRowPopupComponent();
         $this->dataGridEntryFactory = $dataGridEntryFactory;
@@ -107,7 +110,7 @@ class DataGrid extends BaseComponent
 
     public function handleDeleteItem($identity) {
         $this->triggerEvent(static::EVENT_ITEM_DELETED, $identity);
-        $this->flashes[] = new FlashMessage($this->translator->translate("Item deleted"));
+        $this->flashes[] = new FlashMessage($this->getTranslator()->translate("Item deleted"));
         $this->redrawControl();
     }
 
@@ -157,9 +160,9 @@ class DataGrid extends BaseComponent
             return $this->popupForm;
         }
 
-        $popup = new DynamicPopupForm($this->translator);
+        $popup = new DynamicPopupForm();
         $popup->setModalHtmlId(self::ROW_FORM_HTML_ID);
-        $popup->setModalTitle($this->translator->translate('New row'));
+        $popup->setModalTitle($this->getTranslator()->translate('New row'));
         $popup->onEvent(DynamicPopupForm::EVENT_DYNAMIC_FORM_SAVE, function($values) {
             $this->addFormFinished((array) $values['formValues']);
         });
@@ -184,7 +187,7 @@ class DataGrid extends BaseComponent
 
     private function addFormFinished(array $values) {
         $this->triggerEvent(static::EVENT_ITEM_SAVED, $values);
-        $this->flashes[] = new FlashMessage($this->translator->translate("Item saved"));
+        $this->flashes[] = new FlashMessage($this->getTranslator()->translate("Item saved"));
 
         $this->getRowForm()->reset();
         $this->redrawControl();
@@ -200,7 +203,7 @@ class DataGrid extends BaseComponent
                 break;
             case DataGridEntry::TYPE_FILE:
                 $field = new UploadControl($entry->getFieldName());
-                $field->setRequired($this->translator->translate('Please upload a file'));
+                $field->setRequired($this->getTranslator()->translate('Please upload a file'));
                 break;
         }
         return $field;
@@ -263,5 +266,14 @@ class DataGrid extends BaseComponent
                  ->setAttribute("onclick", "$.nette.load()");
         }
         $this->keys = $keys;
+    }
+
+    private function getTranslator(): ITranslator
+    {
+        if (isset($this->translator)) {
+            return $this->translator;
+        }
+
+        return $this->translator = new DummyTranslator();
     }
 }
