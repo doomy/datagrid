@@ -7,7 +7,7 @@
     "name": "doomy/datagrid",
     "description": "DataGrid components",
     "require": {
-        "php": "^7.4",
+        "php": ">=7.4",
         "doomy/components": "2.0.1",
         "doomy/translator": "^1.2.0",
         "nette/utils": "^v3.1.3"

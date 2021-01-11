@@ -15,7 +15,7 @@ class DataGridEntryFactory
         $this->data = $data;
     }
 
-    public function assembleEntry($key, $value = NULL, $entityClass) {
+    public function assembleEntry($key, $value, $entityClass) {
         $entry = new DataGridEntry();
         $entry->setKey($key);
         if (substr(strtolower($key), -3) == "_id") {
