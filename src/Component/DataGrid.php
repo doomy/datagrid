@@ -76,6 +76,8 @@ class DataGrid extends BaseComponent
      */
     private DataEntityManager $data;
 
+    private bool $skipIdentity = TRUE;
+
     protected ITranslator $translator;
 
     public function __construct(
@@ -83,7 +85,8 @@ class DataGrid extends BaseComponent
         DataEntityManager $data,
         string $entityClass,
         array $hiddenFields = [],
-        bool $preventPopup = FALSE
+        bool $preventPopup = FALSE,
+        bool $skipIdentity = TRUE
     )
     {
         parent::__construct();
@@ -92,6 +95,7 @@ class DataGrid extends BaseComponent
         $this->dataGridEntryFactory = $dataGridEntryFactory;
         $this->entityClass = $entityClass;
         $this->hiddenFields = $hiddenFields;
+        $this->skipIdentity = $skipIdentity;
         $this->setupFields();
         $this->data = $data;
     }
@@ -244,7 +248,9 @@ class DataGrid extends BaseComponent
         foreach ($this->entityClass::getFields() as $key) {
             if ($key == $this->entityClass::IDENTITY_COLUMN) {
                 $this->identityKey = $key;
-                continue;
+                if ($this->skipIdentity) {
+                    continue;
+                }
             }
 
             if (in_array($key, $this->hiddenFields)) {
