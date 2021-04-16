@@ -77,6 +77,7 @@ class DataGrid extends BaseComponent
     private DataEntityManager $data;
 
     private bool $skipIdentity = TRUE;
+    private bool $preventAdd = FALSE;
 
     protected ITranslator $translator;
 
@@ -109,6 +110,7 @@ class DataGrid extends BaseComponent
         $this->template->preventPopup = $this->preventPopup;
         $this->template->rowFormHtmlId = static::ROW_FORM_HTML_ID;
         $this->template->identityKey = $this->identityKey;
+        $this->template->preventAdd = $this->preventAdd;
         parent::render();
     }
 
@@ -145,6 +147,11 @@ class DataGrid extends BaseComponent
 
     public function setCustomOrderBy(string $orderBy) {
         $this->customOrderBy = $orderBy;
+    }
+
+    public function setPreventAdd(bool $preventAdd = FALSE): void
+    {
+        $this->preventAdd = $preventAdd;
     }
 
     private function setupItem($item) {

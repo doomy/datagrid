@@ -7,7 +7,7 @@
 {control addForm}
 <table class="table table-striped table-bordered dataTable no-footer datagrid">
 
-    {if !$readOnly}
+    {if !$readOnly && !$preventAdd}
         <tr>
             <td colspan="{count($keys)}">
                 <a
