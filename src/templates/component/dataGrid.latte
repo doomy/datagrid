@@ -43,7 +43,7 @@
             {/foreach}
             {if isset($identityKey) && !$readOnly}
                 <td>
-                    {capture $deleteMessage}{_}Really delete?{/_}{/capture}
+                    {capture $deleteMessage}{translate}Really delete?{/translate}{/capture}
                     <a
                             class="delete"
                             n:href="deleteItem!, $item[$identityKey]->getValue()"
